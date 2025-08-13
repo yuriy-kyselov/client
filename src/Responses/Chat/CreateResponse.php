@@ -34,6 +34,7 @@ final class CreateResponse implements ResponseContract, ResponseHasMetaInformati
         public readonly string $model,
         public readonly ?string $systemFingerprint,
         public readonly array $choices,
+        public readonly ?string $requestId, // Новое поле для request_id
         public readonly ?CreateResponseUsage $usage,
         private readonly MetaInformation $meta,
     ) {}
@@ -45,6 +46,31 @@ final class CreateResponse implements ResponseContract, ResponseHasMetaInformati
      */
     public static function from(array $attributes, MetaInformation $meta): self
     {
+        // Проверяем, если это отложенный ответ (только request_id)
+        if (isset($attributes['request_id']) && !isset($attributes['choices'])) {
+            return new self(
+                null, // id
+                'deferred.completion', // object
+                time(), // created
+                'unknown', // model
+                null, // system_fingerprint
+                [], // пустой массив choices
+                $attributes['request_id'], // request_id
+                null, // usage
+                $meta,
+            );
+        }
+
+        // Обработка ошибок
+        if (!isset($attributes['choices']) || !is_array($attributes['choices'])) {
+            if (isset($attributes['message'])) {
+                throw new ErrorException($attributes['message']);
+            } else {
+                throw new \InvalidArgumentException('Отсутствует или не массив поле choices');
+            }
+        }
+
+        // Обычная обработка с choices
         $choices = array_map(fn (array $result): CreateResponseChoice => CreateResponseChoice::from(
             $result
         ), $attributes['choices']);
@@ -56,6 +82,7 @@ final class CreateResponse implements ResponseContract, ResponseHasMetaInformati
             $attributes['model'],
             $attributes['system_fingerprint'] ?? null,
             $choices,
+            $attributes['request_id'] ?? null,
             isset($attributes['usage']) ? CreateResponseUsage::from($attributes['usage']) : null,
             $meta,
         );
@@ -76,6 +103,7 @@ final class CreateResponse implements ResponseContract, ResponseHasMetaInformati
                 static fn (CreateResponseChoice $result): array => $result->toArray(),
                 $this->choices,
             ),
+            'request_id' => $this->requestId ?? null,
             'usage' => $this->usage?->toArray(),
         ], fn (mixed $value): bool => ! is_null($value));
     }
