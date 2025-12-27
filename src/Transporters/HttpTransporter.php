@@ -20,6 +20,7 @@ use OpenAI\ValueObjects\Transporter\Response;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
+use Exception;
 
 /**
  * @internal
@@ -130,7 +131,7 @@ final class HttpTransporter implements TransporterContract
             $response = json_decode($contents, true, flags: JSON_THROW_ON_ERROR);
 
             if (isset($response['error'])) {
-                throw new ErrorException(['message' => $response['error']], $statusCode);
+                throw new Exception(['message' => $response['error']], $statusCode);
             }
         } catch (JsonException $jsonException) {
             throw new UnserializableResponse($jsonException);
