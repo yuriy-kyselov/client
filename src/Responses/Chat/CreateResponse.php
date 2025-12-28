@@ -69,11 +69,7 @@ final class CreateResponse implements ResponseContract, ResponseHasMetaInformati
 
         // Обработка ошибок
         if (!isset($attributes['choices']) || !is_array($attributes['choices'])) {
-            if (isset($attributes['message'])) {
-                throw new Exception($attributes['message']);
-            } else {
-                throw new \InvalidArgumentException('Отсутствует или не массив поле choices');
-            }
+            throw new Exception('Отсутствует или не массив поле choices. Ответ АПИ : ' . json_encode($attributes));
         }
 
         // Обычная обработка с choices
