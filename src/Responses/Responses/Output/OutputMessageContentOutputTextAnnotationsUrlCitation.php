@@ -26,8 +26,8 @@ final class OutputMessageContentOutputTextAnnotationsUrlCitation implements Resp
      * @param  'url_citation'  $type
      */
     private function __construct(
-        public readonly int $endIndex,
-        public readonly int $startIndex,
+        public readonly int|null $endIndex,
+        public readonly int|null $startIndex,
         public readonly string $title,
         public readonly string $type,
         public readonly string $url,
@@ -39,8 +39,8 @@ final class OutputMessageContentOutputTextAnnotationsUrlCitation implements Resp
     public static function from(array $attributes): self
     {
         return new self(
-            endIndex: $attributes['end_index'],
-            startIndex: $attributes['start_index'],
+            endIndex: $attributes['end_index'] ?? null,
+            startIndex: $attributes['start_index'] ?? null,
             title: $attributes['title'],
             type: $attributes['type'],
             url: $attributes['url'],
