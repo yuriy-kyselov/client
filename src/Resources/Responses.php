@@ -62,7 +62,7 @@ final class Responses implements ResponsesContract
 
         $response = $this->transporter->requestStream($payload);
 
-        \Illuminate\Support\Facades\Log::debug('Stream Event', $response->getBody()->getContents());
+        \Illuminate\Support\Facades\Log::debug('Stream Event', ['message' => $response->getBody()->getContents()]);
 
         return new StreamResponse(CreateStreamedResponse::class, $response);
     }
