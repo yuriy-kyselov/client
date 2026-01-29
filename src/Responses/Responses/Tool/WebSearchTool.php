@@ -30,7 +30,7 @@ final class WebSearchTool implements ResponseContract
      */
     private function __construct(
         public readonly string $type,
-        public readonly string $searchContextSize,
+        public readonly string|null $searchContextSize,
         public readonly ?WebSearchUserLocation $userLocation,
     ) {}
 
@@ -41,7 +41,7 @@ final class WebSearchTool implements ResponseContract
     {
         return new self(
             type: $attributes['type'],
-            searchContextSize: $attributes['search_context_size'],
+            searchContextSize: $attributes['search_context_size'] ?? null,
             userLocation: isset($attributes['user_location'])
                 ? WebSearchUserLocation::from($attributes['user_location'])
                 : null,
