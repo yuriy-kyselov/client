@@ -28,7 +28,7 @@ final class OutputMessageContentOutputTextAnnotationsUrlCitation implements Resp
     private function __construct(
         public readonly int|null $endIndex,
         public readonly int|null $startIndex,
-        public readonly string $title,
+        public readonly string|null $title,
         public readonly string $type,
         public readonly string $url,
     ) {}
@@ -41,7 +41,7 @@ final class OutputMessageContentOutputTextAnnotationsUrlCitation implements Resp
         return new self(
             endIndex: $attributes['end_index'] ?? null,
             startIndex: $attributes['start_index'] ?? null,
-            title: $attributes['title'],
+            title: $attributes['title'] ?? null,
             type: $attributes['type'],
             url: $attributes['url'],
         );
